@@ -1,0 +1,10 @@
+Es necesario instalar:
+fastapi
+uvicorn
+scikit-learn
+pandas
+numpy
+
+
+Se instalan usando el comando en la terminal:
+pip install -r requirements.txt
