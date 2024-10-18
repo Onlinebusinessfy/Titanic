@@ -1,0 +1,10 @@
+import pandas as pd
+import joblib
+
+# Cargar el modelo previamente guardado
+model = joblib.load('model.sav')
+
+def predict(data):
+    # Realizar la predicción
+    prediction = model.predict(data)
+    return prediction[0]

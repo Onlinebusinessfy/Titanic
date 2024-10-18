@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo de Clasificación - Titanic</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000000; /* Fondo negro */
+            color: #FFFFFF; /* Texto blanco */
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #FFFFFF; /* Fondo blanco */
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            color: #FF6600; /* Naranja */
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        form {
+            margin: 50px auto;
+            padding: 30px;
+            width: 60%; /* Aumenta el ancho del formulario */
+            background-color: #1a1a1a; /* Fondo oscuro para el formulario */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333333;
+            color: #FFFFFF;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #FF6600; /* Naranja */
+            color: #FFFFFF;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #e65c00; /* Naranja más oscuro al hacer hover */
+        }
+
+        #result {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-top: 30px;
+        }
+
+        footer {
+            background-color: #1a1a1a; /* Fondo oscuro */
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #FFFFFF;
+            font-size: 1.2rem; /* Aumenta el tamaño del texto */
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            left: 0;
+        }
+
+        footer .left, footer .right {
+            margin: 0 auto;
+        }
+
+        footer .left {
+            margin-left: 10%; /* Ajusta el margen para que no esté tan a la izquierda */
+        }
+
+        footer .right {
+            margin-right: 10%; /* Ajusta el margen para que no esté tan a la derecha */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Modelo de Clasificación - Titanic</h1>
+    </header>
+
+    <form id="titanic-form">
+        <label for="Pclass">Clase (1, 2, 3):</label>
+        <input type="number" id="Pclass" name="Pclass" min="1" max="3" required>
+
+        <label for="Sex">Sexo (0 = Mujer, 1 = Hombre):</label>
+        <input type="number" id="Sex" name="Sex" min="0" max="1" required>
+
+        <label for="Age">Edad:</label>
+        <input type="number" id="Age" name="Age" required>
+
+        <label for="SibSp">Número de hermanos/esposos a bordo:</label>
+        <input type="number" id="SibSp" name="SibSp" required>
+
+        <label for="Parch">Número de padres/hijos a bordo:</label>
+        <input type="number" id="Parch" name="Parch" required>
+
+        <label for="Fare">Tarifa del boleto:</label>
+        <input type="number" id="Fare" name="Fare" required>
+
+        <label for="Embarked">Puerto de embarque (0 = Cherburgo, 1 = Queenstown, 2 = Southampton):</label>
+        <input type="number" id="Embarked" name="Embarked" min="0" max="2" required>
+
+        <button type="submit">Predecir</button>
+    </form>
+
+    <p id="result"></p>
+
+    <footer>
+        <div class="left">AI Lab</div>
+        <div class="right">Samuel Dominguez</div>
+    </footer>
+
+    <script>
+        const form = document.getElementById('titanic-form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = {
+                Pclass: parseInt(document.getElementById('Pclass').value),
+                Sex: parseInt(document.getElementById('Sex').value),
+                Age: parseFloat(document.getElementById('Age').value),
+                SibSp: parseInt(document.getElementById('SibSp').value),
+                Parch: parseInt(document.getElementById('Parch').value),
+                Fare: parseFloat(document.getElementById('Fare').value),
+                Embarked: parseInt(document.getElementById('Embarked').value),
+            };
+
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+            document.getElementById('result').textContent = result.Survived ? 'Sobrevivió' : 'No sobrevivió';
+        });
+    </script>
+</body>
+</html>

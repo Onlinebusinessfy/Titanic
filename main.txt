@@ -1,0 +1,37 @@
+from fastapi import FastAPI
+from pydantic import BaseModel
+import pandas as pd
+import pickle
+from fastapi.responses import FileResponse
+
+# Cargar el modelo entrenado
+with open('model.sav', 'rb') as model_file:
+    model = pickle.load(model_file)
+
+app = FastAPI()
+
+# Definir la estructura de los datos que recibiremos
+class TitanicData(BaseModel):
+    Pclass: int
+    Sex: int  # 0 para mujer, 1 para hombre
+    Age: float
+    SibSp: int
+    Parch: int
+    Fare: float
+    Embarked: int  # 0 = Cherbourg, 1 = Queenstown, 2 = Southampton
+
+@app.post("/predict")
+async def predict_survival(data: TitanicData):
+    # Convertir los datos recibidos a un DataFrame
+    input_data = pd.DataFrame([data.dict().values()], columns=data.dict().keys())
+    
+    # Hacer la predicción con el modelo
+    prediction = model.predict(input_data)[0]
+    
+    # Retornar el resultado de la predicción
+    return {"Survived": bool(prediction)}
+
+# Ruta para servir el archivo HTML
+@app.get("/")
+async def get_index():
+    return FileResponse("static/index.html")
